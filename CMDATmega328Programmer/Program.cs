@@ -47,9 +47,10 @@ namespace ProgTest
 
         static SerialPort _port;
 
+        [STAThread]
         static void Main(string[] args)
         {
-            _port = new SerialPort("COM10", 9600);
+            _port = new SerialPort("COM10", 19200);
             _port.Open();
             _port.DtrEnable = true;
 
@@ -102,7 +103,8 @@ namespace ProgTest
         static bool CMDMenu()
         {
             Console.WriteLine("[poll] Poll programmer.");
-            Console.WriteLine("[wf] Write fuses as \"Arduino Nano w/ ATmega328\".");
+            //Console.WriteLine("[wf] Write fuses as \"Arduino Nano w/ ATmega328\".");
+            Console.WriteLine("[wf] Write fuses to 8MHz internal osc.");
             Console.WriteLine("[rf] Read CPU fuses.");
             Console.WriteLine("[rs] Read CPU signature (Use to check if the CPU is responding).");
             Console.WriteLine("[edc] Dump EEPROM to console.");
@@ -148,10 +150,11 @@ namespace ProgTest
                         break;
                     #endregion
                     #region Write fuses to "Ardunio nano \w Atmega328"
+                        //Changed to 8MHz internal osc to rescue chips
                     case "wf":
                         {
-                            const byte FuseLowByte = 0xFF;
-                            const byte FuseHighByte = 0xDA;
+                            const byte FuseLowByte = 0x62; //FF
+                            const byte FuseHighByte = 0xD9; //DA
                             const byte ExtendedFuses = 0x05;
 
                             //Make sure

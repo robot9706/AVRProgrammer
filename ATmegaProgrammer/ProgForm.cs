@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using System.Windows.Forms;
@@ -9,6 +10,7 @@ namespace ATmegaProgrammer
     {
         //Vars
         private SerialPort _port;
+        private IntelHEX _programBuffer;
 
         //UI
         public ProgForm()
@@ -48,6 +50,11 @@ namespace ATmegaProgrammer
             MessageBox.Show(this, msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        private void Info(string msg)
+        {
+            MessageBox.Show(this, msg, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         private void btnCon_Click(object sender, EventArgs e)
         {
             Cursor = Cursors.WaitCursor;
@@ -76,7 +83,9 @@ namespace ATmegaProgrammer
                 }
 
                 //Enable stuff
-                btnDisc.Enabled = progGroup.Enabled = true;
+                btnDisc.Enabled = progGroup.Enabled = groupProg.Enabled = true;
+                btnEnterProgramming.Enabled = true;
+                btnExitProgramming.Enabled = false;
 
                 //Disable connect button
                 btnCon.Enabled = false;
@@ -106,11 +115,18 @@ namespace ATmegaProgrammer
             {
                 if (_port != null)
                 {
+                    if(btnExitProgramming.Enabled) //We are in programming mode -> exit it
+                    {
+                        STK.EndProgramming(); //Don't care if it's ok or not
+                    }
+
                     _port.Close();
                 }
 
                 //Disable stuff
-                btnDisc.Enabled = progGroup.Enabled = false;
+                btnDisc.Enabled = progGroup.Enabled = groupProg.Enabled = false;
+                btnEnterProgramming.Enabled = true;
+                btnExitProgramming.Enabled = false;
 
                 //Check connect button
                 cbCom_SelectedIndexChanged(sender, e);
@@ -143,20 +159,6 @@ namespace ATmegaProgrammer
             lblProgVer.Text = STK.GetISPVersion();
         }
 
-        private void btnResetProg_Click(object sender, EventArgs e)
-        {
-            if(_port != null)
-            {
-                Cursor = Cursors.WaitCursor;
-
-                _port.DtrEnable = false;
-                Thread.Sleep(1000);
-                _port.DtrEnable = true;
-
-                Cursor = Cursors.Default;
-            }
-        }
-
         private void btnCheckIHex_Click(object sender, EventArgs e)
         {
             try
@@ -165,7 +167,16 @@ namespace ATmegaProgrammer
                 opf.Filter = "Intel hex (*.hex)|*.hex|All files (*.*)|*.*";
                 if(opf.ShowDialog(this) == DialogResult.OK)
                 {
+                    IntelHEX hex = new IntelHEX();
+                    if(hex.ParseFile(opf.FileName))
+                    {
+                        int dt = 0;
+                        foreach (IntelHEX.Record r in hex.Records)
+                            if (r.Type == IntelHEX.RecordType.Data)
+                                dt++;
 
+                        Info("The file seems valid.\nRecords: " + hex.Records.Count.ToString() + "\nData records: " + dt.ToString());
+                    }
                 }
             }
             catch(Exception ex)
@@ -176,12 +187,187 @@ namespace ATmegaProgrammer
 
         private void btnCheckICompHex_Click(object sender, EventArgs e)
         {
+            try
+            {
+                OpenFileDialog opf = new OpenFileDialog();
+                opf.Filter = "Intel hex (*.hex)|*.hex|All files (*.*)|*.*";
+                if (opf.ShowDialog(this) == DialogResult.OK)
+                {
+                    IntelHEX hex = new IntelHEX();
+                    if (hex.ParseFile(opf.FileName))
+                    {
+                        bool ok = true;
+                        int dt = 0;
+                        foreach (IntelHEX.Record r in hex.Records)
+                        {
+                            if (r.Type == IntelHEX.RecordType.Data)
+                                dt++;
+                            if (r.Type == IntelHEX.RecordType.ExtendedAddressBase || r.Type == IntelHEX.RecordType.ExtendedLinearAddress || r.Type == IntelHEX.RecordType.LinearAddressBase)
+                                ok = false;
+                        }
 
+                        Info("The file seems valid.\nRecords: " + hex.Records.Count.ToString() + "\nData records: " + dt.ToString() + "\nContains extended records: " + (ok ? "No" : "Yes") + "-> " + (ok ? "Compatible" : "Not compatible") + " with ATmega328P chips.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Error("Failed to check file: " + ex.Message);
+            }
         }
 
         private void btnWires_Click(object sender, EventArgs e)
         {
+            using (WiringForm wf = new WiringForm())
+                wf.ShowDialog(this);
+        }
 
+        private void btnEnterProgramming_Click(object sender, EventArgs e)
+        {
+            _port.Write(cbSPILow.Checked ? "r" : "t");
+
+            if (STK.EnterProgramming())
+            {
+                btnEnterProgramming.Enabled = false;
+                btnExitProgramming.Enabled = true;
+                cbSPILow.Enabled = false;
+
+                btnReadSignature_Click(sender, e);
+                btnFuseRead_Click(sender, e);
+            }
+            else
+            {
+                Error("Failed to enter programming mode!");
+            }
+        }
+
+        private void btnExitProgramming_Click(object sender, EventArgs e)
+        {
+            if (STK.EndProgramming())
+            {
+                btnEnterProgramming.Enabled = true;
+                btnExitProgramming.Enabled = false;
+                cbSPILow.Enabled = true;
+            }
+            else
+            {
+                Error("Failed to exit programming mode!");
+            }
+        }
+
+        private void btnEnterProgramming_EnabledChanged(object sender, EventArgs e)
+        {
+            groupFuses.Enabled = groupSig.Enabled = groupFlash.Enabled = btnExitProgramming.Enabled;
+        }
+
+        private void btnFuseRead_Click(object sender, EventArgs e)
+        {
+            tbBitsLow.Text = tbBitsHigh.Text = tbBitsExtended.Text = lblLockBits.Text = "...";
+            Refresh();
+
+            tbBitsLow.Text = STK.ReadFuseBitsLow().ToString("X2");
+            tbBitsHigh.Text = STK.ReadFuseBitsHigh().ToString("X2");
+            tbBitsExtended.Text = STK.ReadExtendedFuseBits().ToString("X2");
+            lblLockBits.Text = STK.ReadLockBits().ToString("X2");
+        }
+
+        private void btnFuseWrite_Click(object sender, EventArgs e)
+        {
+            if(MessageBox.Show(this, "Are you sure want to write fuses (fuse bits low/high and extended fuse bits)?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                Cursor = Cursors.WaitCursor;
+                try
+                {
+                    byte low = Convert.ToByte(tbBitsLow.Text, 16);
+                    byte high = Convert.ToByte(tbBitsHigh.Text, 16);
+                    byte ext = Convert.ToByte(tbBitsExtended.Text, 16);
+
+                    while (!STK.IsReady())
+                        Thread.Sleep(100);
+                    bool lowOk = STK.WriteFuseLowBits(low);
+
+                    while (!STK.IsReady())
+                        Thread.Sleep(100);
+                    bool highOk = STK.WriteFuseHighBits(high);
+
+                    while (!STK.IsReady())
+                        Thread.Sleep(100);
+                    bool extOk = STK.WriteExtendedFuseBits(ext);
+
+                    while (!STK.IsReady())
+                        Thread.Sleep(100);
+
+                    btnFuseRead_Click(sender, e);
+
+                    byte nLow = STK.ReadFuseBitsLow();
+                    byte nHigh = STK.ReadFuseBitsHigh();
+                    byte nExt = STK.ReadExtendedFuseBits();
+
+                    lowOk = (lowOk && low == nLow);
+                    highOk = (highOk && high == nHigh);
+                    extOk = (extOk && ext == nExt);
+
+                    Info("Fuse report:\nLow: " + (lowOk ? "OK" : "Failed") + "\nHigh: " + (highOk ? "OK" : "Failed") + "\nExt: " + (extOk ? "OK" : "Failed"));
+                }
+                catch(Exception ex)
+                {
+                    Cursor = Cursors.Default;
+                    Error("An error ocurred: " + ex.Message);
+                }
+                Cursor = Cursors.Default;
+            }
+        }
+
+        private void btnReadSignature_Click(object sender, EventArgs e)
+        {
+            lblSig.Text = "...";
+            this.Refresh();
+            byte[] sig = STK.ReadSignature();
+            lblSig.Text = "0x" + sig[0].ToString("X2") + sig[1].ToString("X2") + sig[2].ToString("X2");
+        }
+
+        private void cbPWM_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_port != null)
+            {
+                _port.Write(cbPWM.Checked ? "q" : "w");
+            }
+        }
+
+        private void btnBufLoad_Click(object sender, EventArgs e)
+        {
+            lblProgBuf.Text = "-";
+            btnFlash.Enabled = false;
+
+            try
+            {
+                OpenFileDialog opf = new OpenFileDialog();
+                opf.Filter = "Intel hex (*.hex)|*.hex|All files (*.*)|*.*";
+                if (opf.ShowDialog(this) == DialogResult.OK)
+                {
+                    IntelHEX hex = new IntelHEX();
+                    if (hex.ParseFile(opf.FileName))
+                    {
+                        lblProgBuf.Text = Path.GetFileName(opf.FileName);
+
+                        _programBuffer = hex;
+                        btnFlash.Enabled = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Error("Failed to load hex: " + ex.Message);
+            }
+        }
+
+        private void btnFlash_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show(this, "Are you sure want to flash the program memory?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                using (FlashProgress prog = new FlashProgress(_programBuffer))
+                    prog.ShowDialog(this);
+            }
         }
     }
 }

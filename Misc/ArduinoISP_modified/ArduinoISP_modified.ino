@@ -13,13 +13,7 @@
 #include "Arduino.h"
 #include "SPI.h"
 
-#define SPI_CLOCK 		(1000000/32)
-
-#if defined(ARDUINO_ARCH_AVR)
-  #if SPI_CLOCK > (F_CPU / 128)
-    #define USE_HARDWARE_SPI
-  #endif
-#endif
+int SPI_CLOCK = (1000000/32);
 
 #define RESET     10
 #define PIN_MOSI	11
@@ -40,6 +34,7 @@
 
 void setup() {
   Serial.begin(BAUDRATE);
+  pinMode(9, OUTPUT);
 }
 
 int error = 0;
@@ -59,7 +54,7 @@ void loop(void) {
 
 uint8_t getch() {
   while (!Serial.available());
-  return Serial.read();
+    return Serial.read();
 }
 
 uint8_t buff[256];
@@ -185,6 +180,20 @@ void avrisp() {
       error = 0;
       end_pmode();
       empty_reply();
+      break;
+
+   case 'q': //Enable ~400Hz PWM on pin 9
+      analogWrite(9, 128);
+      break;
+   case 'w': //Disable PWM on pin 9
+      analogWrite(9, 0);
+      break;
+
+   case 'r': //Very slow SPI clock to rescue chips
+      SPI_CLOCK = 16;
+      break;
+   case 't': //Revert SPI clock
+      SPI_CLOCK = (1000000/32);
       break;
       
     default:

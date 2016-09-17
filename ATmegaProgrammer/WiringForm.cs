@@ -16,5 +16,10 @@ namespace ATmegaProgrammer
         {
             InitializeComponent();
         }
+
+        private void WiringForm_Resize(object sender, EventArgs e)
+        {
+            Refresh();
+        }
     }
 }

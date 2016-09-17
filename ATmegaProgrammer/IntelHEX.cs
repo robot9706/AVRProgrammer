@@ -4,7 +4,7 @@ using System.IO;
 
 namespace ATmegaProgrammer
 {
-    class IntelHEX
+    public class IntelHEX
     {
         public enum RecordType : byte
         {
@@ -38,68 +38,59 @@ namespace ATmegaProgrammer
 
         public bool ParseFile(string path)
         {
-            try
+            using (StreamReader sr = new StreamReader(path))
             {
-                using (StreamReader sr = new StreamReader(path))
+                string line;
+                int lineIDX = 0;
+                while (!sr.EndOfStream)
                 {
-                    string line;
-                    int lineIDX = 0;
-                    while(!sr.EndOfStream)
+                    line = sr.ReadLine();
+                    lineIDX++;
+                    if (string.IsNullOrEmpty(line))
+                        continue;
+                    if (!line.StartsWith(":"))
                     {
-                        line = sr.ReadLine();
-                        lineIDX++;
-                        if (string.IsNullOrEmpty(line))
-                            continue;
-                        if(!line.StartsWith(":"))
+                        throw new Exception("Invalid line at " + lineIDX.ToString());
+                    }
+                    else
+                    {
+                        byte[] linebytes = ConvertLine(line);
+
+                        Record rec = new Record();
+
+                        rec.ByteCount = linebytes[0];
+
+                        byte[] addressBytes = new byte[2];
+                        Array.Copy(linebytes, 1, addressBytes, 0, 2);
+                        Array.Reverse(addressBytes);
+                        rec.Address = BitConverter.ToUInt16(addressBytes, 0);
+
+                        rec.Type = (RecordType)linebytes[3];
+
+                        rec.Data = new byte[rec.ByteCount];
+                        Array.Copy(linebytes, 4, rec.Data, 0, rec.ByteCount);
+
+                        rec.Checksum = linebytes[linebytes.Length - 1];
+
+                        //Validate checksum
+                        if (rec.Type == RecordType.Data)
                         {
-                            throw new Exception("Invalid line at " + lineIDX.ToString());
-                        }
-                        else
-                        {
-                            byte[] linebytes = ConvertLine(line);
+                            byte sum = 0;
+                            for (int x = 0; x < linebytes.Length; x++)
+                                sum += linebytes[x];
 
-                            Record rec = new Record();
-
-                            rec.ByteCount = linebytes[0];
-
-                            byte[] addressBytes = new byte[2];
-                            Array.Copy(linebytes, 1, addressBytes, 0, 2);
-                            Array.Reverse(addressBytes);
-                            rec.Address = BitConverter.ToUInt16(addressBytes, 0);
-
-                            rec.Type = (RecordType)linebytes[3];
-
-                            rec.Data = new byte[rec.ByteCount];
-                            Array.Copy(linebytes, 4, rec.Data, 0, rec.ByteCount);
-
-                            rec.Checksum = linebytes[linebytes.Length - 1];
-
-                            //Validate checksum
-                            if(rec.Type == RecordType.Data)
+                            if (sum != 0)
                             {
-                                byte sum = 0;
-                                for (int x = 0; x < linebytes.Length; x++)
-                                    sum += linebytes[x];
-
-                                if(sum != 0)
-                                {
-                                    throw new Exception("Invalid checksum at line " + lineIDX.ToString());
-                                }
+                                throw new Exception("Invalid checksum at line " + lineIDX.ToString());
                             }
-
-                            _records.Add(rec);
                         }
+
+                        _records.Add(rec);
                     }
                 }
-
-                return true;
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine("Failed to read file: " + ex.Message);
             }
 
-            return false;
+            return true;
         }
 
         private byte[] ConvertLine(string line)
@@ -116,39 +107,6 @@ namespace ATmegaProgrammer
             }
 
             return data;
-        }
-
-        public int GetDataLength()
-        {
-            int addressStart = int.MaxValue;
-            int addressEnd = 0;
-            foreach (Record rec in _records)
-            {
-                if (rec.Type != RecordType.Data)
-                    continue;
-
-                if (rec.Address < addressStart)
-                    addressStart = rec.Address;
-                if (rec.Address + rec.ByteCount > addressEnd)
-                    addressEnd = rec.Address + rec.ByteCount;
-            }
-
-            return (addressEnd - addressStart) / 2; //High + low bytes = 2 byte -> 1 word
-        }
-
-        public int GetDataStart()
-        {
-            int addressStart = int.MaxValue;
-            foreach (Record rec in _records)
-            {
-                if (rec.Type != RecordType.Data)
-                    continue;
-
-                if (rec.Address < addressStart)
-                    addressStart = rec.Address;
-            }
-
-            return addressStart;
         }
 
         public MemoryStream GetRawData()

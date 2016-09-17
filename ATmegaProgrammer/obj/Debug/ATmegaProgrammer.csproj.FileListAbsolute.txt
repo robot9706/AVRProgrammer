@@ -8,3 +8,5 @@ C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATme
 C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATmegaProgrammer.csproj.GenerateResource.Cache
 C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATmegaProgrammer.exe
 C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATmegaProgrammer.pdb
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATmegaProgrammer.WiringForm.resources
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATmegaProgrammer.FlashProgress.resources

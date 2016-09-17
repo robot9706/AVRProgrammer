@@ -85,9 +85,139 @@ namespace ATmegaProgrammer
             return verTxt;
         }
 
+        public static bool EnterProgramming()
+        {
+            SendText("P ");
+
+            return ((ReadByte() == STK_INSYNC && ReadByte() == STK_OK));
+        }
+
+        public static bool EndProgramming()
+        {
+            SendText("Q ");
+
+            return ((ReadByte() == STK_INSYNC && ReadByte() == STK_OK));
+        }
+
+        public static bool IsReady()
+        {
+            return (STK_Universal(0xF0, 0x00, 0x00, 0x00) == 254);
+        }
+
+        public static byte[] ReadSignature()
+        {
+            byte[] sig = new byte[3];
+
+            sig[0] = STK_Universal(0x30, 0x00, 0x00, 0x00);
+            sig[1] = STK_Universal(0x30, 0x00, 0x01, 0x00);
+            sig[2] = STK_Universal(0x30, 0x00, 0x02, 0x00);
+
+            return sig;
+        }
+
+        public static byte ReadLockBits()
+        {
+            return STK_Universal(0x58, 0x00, 0x00, 0x00);
+        }
+
+        public static byte ReadExtendedFuseBits()
+        {
+            return STK_Universal(0x50, 0x08, 0x00, 0x00);
+        }
+
+        public static byte ReadFuseBitsHigh()
+        {
+            return STK_Universal(0x58, 0x08, 0x00, 0x00);
+        }
+
+        public static byte ReadFuseBitsLow()
+        {
+            return STK_Universal(0x50, 0x00, 0x00, 0x00);
+        }
+
+        public static bool WriteFuseLowBits(byte fuse)
+        {
+            return (STK_Universal(0xAC, 0xA0, 0x00, fuse) == 0x0);
+        }
+
+        public static bool WriteFuseHighBits(byte fuse)
+        {
+            return (STK_Universal(0xAC, 0xA8, 0x00, fuse) == 0x0);
+        }
+
+        public static bool WriteExtendedFuseBits(byte fuse)
+        {
+            return (STK_Universal(0xAC, 0xA4, 0x00, fuse) == 0x0);
+        }
+
+        public static bool ChipErase()
+        {
+            return (STK_Universal(0xAC, 0x80, 0x00, 0x00) == 0x0);
+        }
+
+        public static bool WriteProgramMemoryPage(int address)
+        {
+            int hi = (address >> 8) & 0xFF;
+            int lo = address & 0xFF;
+
+            return (STK_Universal(0x4C, (byte)hi, (byte)lo, 0x0) == lo);
+        }
+
+        public static bool LoadProgramLowByte(int address, byte lowByte)
+        {
+            int hi = (address >> 8) & 0xFF;
+            int lo = address & 0xFF;
+
+            return (STK_Universal(0x40, (byte)hi, (byte)lo, lowByte) == lo);
+        }
+
+        public static bool LoadProgramHighByte(int address, byte highByte)
+        {
+            int hi = (address >> 8) & 0xFF;
+            int lo = address & 0xFF;
+
+            return (STK_Universal(0x48, (byte)hi, (byte)lo, highByte) == lo);
+        }
+
+        public static byte ReadFlashHighByte(int address)
+        {
+            int hi = (address >> 8) & 0xFF;
+            int lo = address & 0xFF;
+
+            return STK_Universal(0x28, (byte)hi, (byte)lo, 0x0);
+        }
+
+        public static byte ReadFlashLowByte(int address)
+        {
+            int hi = (address >> 8) & 0xFF;
+            int lo = address & 0xFF;
+
+            return STK_Universal(0x20, (byte)hi, (byte)lo, 0x0);
+        }
         #endregion
 
         #region STK IO
+        static byte STK_Universal(byte a1, byte a2, byte a3, byte a4)
+        {
+            byte result = 0x0;
+
+            SendChar('V');
+            SendBytes(new byte[] { a1, a2, a3, a4 });
+            SendChar(' ');
+
+            byte rd = ReadByte();
+            if (rd == STK_INSYNC)
+            {
+                result = ReadByte();
+
+                rd = ReadByte();
+
+                return (rd == STK_OK ? result : (byte)0);
+            }
+
+            return result;
+        }
+
         static bool ReadSTKByte(out byte b, char pre, byte data)
         {
             b = 0x0;
@@ -144,6 +274,11 @@ namespace ATmegaProgrammer
         static void SendChar(char c)
         {
             _port.Write(new byte[] { (byte)c }, 0, 1);
+        }
+
+        static void SendBytes(byte[] b)
+        {
+            _port.Write(b, 0, b.Length);
         }
         #endregion
     }

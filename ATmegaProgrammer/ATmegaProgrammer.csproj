@@ -45,6 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FitPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FlashProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FlashProgress.Designer.cs">
+      <DependentUpon>FlashProgress.cs</DependentUpon>
+    </Compile>
     <Compile Include="IntelHEX.cs" />
     <Compile Include="ProgForm.cs">
       <SubType>Form</SubType>
@@ -61,6 +70,9 @@
     <Compile Include="WiringForm.Designer.cs">
       <DependentUpon>WiringForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FlashProgress.resx">
+      <DependentUpon>FlashProgress.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ProgForm.resx">
       <DependentUpon>ProgForm.cs</DependentUpon>
     </EmbeddedResource>
