@@ -8,6 +8,10 @@ A non-paged method is used to write the program flash which makes it slow and it
 
 Changes to the ArdunioISP sketch: I had to lower the SPI clock to program the MCU reliably also hardcoded the old wiring style (pins 10-13). Also I scrapped the STK500 command set and only the "universal" command is used to communicate with the MCU chip.
 
+# Wiring
+Note: No crystal needed for factory new chips (they are fused for their internal 8MHz).
+![Alt text](/Misc/Breadboard.png?raw=true "Wiring")
+
 # Why?
 The original ArduinoToBreadboard method didn't work (because of the Genuino 101 I think), the Ardunio IDE (with it's avrdude) didn't see the MCU so I came up with this project.
 
