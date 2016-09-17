@@ -6,3 +6,11 @@ D:\CSharp\2015\ProgTest\ProgTest\bin\Debug\Misc\ATmegaBOOT_168_atmega328.hex
 D:\CSharp\2015\ProgTest\ProgTest\bin\Debug\ProgTest.exe
 D:\CSharp\2015\ProgTest\ProgTest\bin\Debug\ProgTest.pdb
 D:\CSharp\2015\ProgTest\ProgTest\obj\Debug\CMDATmega328Programmer.csprojResolveAssemblyReference.cache
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\CMDATmega328Programmer\bin\Debug\ProgTest.exe.config
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\CMDATmega328Programmer\obj\Debug\ProgTest.exe
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\CMDATmega328Programmer\obj\Debug\ProgTest.pdb
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\CMDATmega328Programmer\bin\Debug\Misc\ATmegaBOOT_168_atmega328.hex
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\CMDATmega328Programmer\bin\Debug\bootloader.hex
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\CMDATmega328Programmer\bin\Debug\ProgTest.exe
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\CMDATmega328Programmer\bin\Debug\ProgTest.pdb
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\CMDATmega328Programmer\obj\Debug\CMDATmega328Programmer.csprojResolveAssemblyReference.cache

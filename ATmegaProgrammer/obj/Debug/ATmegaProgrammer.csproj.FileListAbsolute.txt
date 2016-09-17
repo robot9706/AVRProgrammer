@@ -1,1 +1,10 @@
 D:\CSharp\2015\ProgTest\ATmegaProgrammer\bin\Debug\ATmegaProgrammer.exe.config
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\bin\Debug\ATmegaProgrammer.exe.config
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\bin\Debug\ATmegaProgrammer.exe
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\bin\Debug\ATmegaProgrammer.pdb
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATmegaProgrammer.csprojResolveAssemblyReference.cache
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATmegaProgrammer.ProgForm.resources
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATmegaProgrammer.Properties.Resources.resources
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATmegaProgrammer.csproj.GenerateResource.Cache
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATmegaProgrammer.exe
+C:\Users\Bence\Documents\GitHub\ATmegaProgrammer\ATmegaProgrammer\obj\Debug\ATmegaProgrammer.pdb

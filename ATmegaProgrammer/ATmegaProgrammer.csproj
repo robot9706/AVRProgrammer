@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IntelHEX.cs" />
     <Compile Include="ProgForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -53,6 +54,13 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="STK.cs" />
+    <Compile Include="WiringForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WiringForm.Designer.cs">
+      <DependentUpon>WiringForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="ProgForm.resx">
       <DependentUpon>ProgForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -64,7 +72,11 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="WiringForm.resx">
+      <DependentUpon>WiringForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -77,6 +89,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Breadboard.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
