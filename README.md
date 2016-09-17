@@ -19,6 +19,7 @@ The original ArduinoToBreadboard method didn't work (because of the Genuino 101 
 ATmegaProgrammer - GUI version: Easy to use.
 
 CMDATmega328Programmer - Test version.
+Using this project is not advised, it's only a test project. Can only fuse chips to Ardunio Nano fuses (16MHz external clock).
 
 ArdunioISP modified sketch included.
 
