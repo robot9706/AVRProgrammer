@@ -20,7 +20,7 @@ int SPI_CLOCK = (1000000/32);
 #define PIN_MISO	12
 #define PIN_SCK		13
 
-#define BAUDRATE	19200
+#define BAUDRATE	19200 //19200
 
 // STK Definitions
 #define STK_OK      0x10
@@ -29,6 +29,7 @@ int SPI_CLOCK = (1000000/32);
 #define STK_INSYNC  0x14
 #define STK_NOSYNC  0x15
 #define CRC_EOP     0x20
+#define CUSTOM_ERROR 0x21
 
 #define SPI_MODE0 0x00
 
@@ -54,7 +55,8 @@ void loop(void) {
 
 uint8_t getch() {
   while (!Serial.available());
-    return Serial.read();
+  
+  return Serial.read();
 }
 
 uint8_t buff[256];
@@ -195,13 +197,36 @@ void avrisp() {
    case 't': //Revert SPI clock
       SPI_CLOCK = (1000000/32);
       break;
+   case 's': //Set custom SPI clock
+      {
+        int clock = 65536 * getch();
+        clock += 256 * getch();
+        clock += getch();
+
+        SPI_CLOCK = clock;
+      }
+      break;
+   case 'S':
+      {
+          Serial.end();
+
+          delay(1000);
+          
+          Serial.begin(115200);
+      }
+   break;
       
     default:
       error++;
       if (CRC_EOP == getch())
+      {
         Serial.print((char)STK_UNKNOWN);
+      }
       else
-        Serial.print((char)STK_NOSYNC);
+      {
+        Serial.print((char)CUSTOM_ERROR);
+        Serial.print(ch);
+      }
   }
 }
 

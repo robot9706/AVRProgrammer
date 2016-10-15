@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Ports;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -10,10 +11,14 @@ namespace ATmegaProgrammer
     {
         //Vars
         private SerialPort _port;
-        private IntelHEX _programBuffer;
+        private string _programBufferFile;
+
+        private string _argHexFile;
+        private string _argCom;
+        private int _argBaud;
 
         //UI
-        public ProgForm()
+        public ProgForm(string[] args)
         {
             InitializeComponent();
         }
@@ -83,7 +88,7 @@ namespace ATmegaProgrammer
                 }
 
                 //Enable stuff
-                btnDisc.Enabled = progGroup.Enabled = groupProg.Enabled = true;
+                btnDisc.Enabled = progGroup.Enabled = groupProg.Enabled = groupBaud.Enabled = true;
                 btnEnterProgramming.Enabled = true;
                 btnExitProgramming.Enabled = false;
 
@@ -124,7 +129,7 @@ namespace ATmegaProgrammer
                 }
 
                 //Disable stuff
-                btnDisc.Enabled = progGroup.Enabled = groupProg.Enabled = false;
+                btnDisc.Enabled = progGroup.Enabled = groupProg.Enabled = groupBaud.Enabled = false;
                 btnEnterProgramming.Enabled = true;
                 btnExitProgramming.Enabled = false;
 
@@ -225,6 +230,18 @@ namespace ATmegaProgrammer
         private void btnEnterProgramming_Click(object sender, EventArgs e)
         {
             _port.Write(cbSPILow.Checked ? "r" : "t");
+
+            //if (!cbSPILow.Checked && (int)numSpiClockDiv.Value != 32)
+            //{
+            //    int spiClock = (1000000 / (int)numSpiClockDiv.Value);
+
+            //    byte a = (byte)(spiClock / 65536);
+            //    byte b = (byte)(spiClock / 256);
+            //    byte c = (byte)(spiClock % 256);
+
+            //    _port.Write(new byte[] { (byte)'s', a, b, c }, 0, 4);
+            //    string rd = _port.ReadLine();
+            //}
 
             if (STK.EnterProgramming())
             {
@@ -350,7 +367,7 @@ namespace ATmegaProgrammer
                     {
                         lblProgBuf.Text = Path.GetFileName(opf.FileName);
 
-                        _programBuffer = hex;
+                        _programBufferFile = opf.FileName;
                         btnFlash.Enabled = true;
                     }
                 }
@@ -365,9 +382,40 @@ namespace ATmegaProgrammer
         {
             if (MessageBox.Show(this, "Are you sure want to flash the program memory?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                using (FlashProgress prog = new FlashProgress(_programBuffer))
-                    prog.ShowDialog(this);
+                IntelHEX hex = new IntelHEX();
+                if (hex.ParseFile(_programBufferFile))
+                {
+                    using (FlashProgress prog = new FlashProgress(hex, cbPaged.Checked))
+                        prog.ShowDialog(this);
+                }
+                else
+                {
+                    Error("Invalid file!");
+                }
             }
+        }
+
+        private void cbSPILow_CheckedChanged(object sender, EventArgs e)
+        {
+            numSpiClockDiv.Enabled = !cbSPILow.Checked;
+        }
+
+        private void btnBaudChange_Click(object sender, EventArgs e)
+        {
+            _port.Write(new byte[] { (byte)'S' }, 0, 1);
+            _port.BaseStream.Flush();
+
+            while (_port.BytesToWrite > 0)
+                Thread.Sleep(100);
+
+            btnDisc_Click(sender, e);
+
+            Thread.Sleep(1500);
+
+            numBaud.Value = 115200;
+
+            //Thread.Sleep(1500);
+            //btnCon_Click(sender, e);
         }
     }
 }

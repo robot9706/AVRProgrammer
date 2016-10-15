@@ -17,10 +17,13 @@ namespace ATmegaProgrammer
         private Thread _flasher;
         private bool _doFlash = true;
 
-        public FlashProgress(IntelHEX hex)
+        private bool _pagedWrite = true;
+
+        public FlashProgress(IntelHEX hex, bool paged)
         {
             InitializeComponent();
 
+            _pagedWrite = paged;
             _hex = hex;
         }
 
@@ -136,6 +139,8 @@ namespace ATmegaProgrammer
                 SetMaxProgress(allWords);
                 SetProgress(0);
 
+                DateTime startTime = DateTime.Now;
+
                 SetTask("Flashing...");
 
                 int writtenWords = 0;
@@ -148,23 +153,48 @@ namespace ATmegaProgrammer
                     if (rec.Type != IntelHEX.RecordType.Data)
                         continue;
 
-                    int pos = rec.Address / 2; //Address is in bytes, but we need word position (1 word is 2 bytes)
-                    int words = rec.ByteCount / 2;
-
-                    for (int x = 0; x < words; x++) //Write each word
+                    if (_pagedWrite)
                     {
-                        if (!_doFlash)
-                            return;
+                        #region Paged
 
-                        int adr = pos + x;
+                        int words = rec.ByteCount / 2;
 
-                        byte[] buffer = new byte[2];
-                        buffer[0] = rec.Data[x * 2];
-                        buffer[1] = rec.Data[(x * 2) + 1];
-
-                        if (!STK.LoadProgramLowByte(adr, buffer[0]))
+                        for (int x = 0; x < words; x++) //Write each word
                         {
-                            Error("An error ocurred while flashing at address: 0x" + adr.ToString());
+                            if (!_doFlash)
+                                return;
+
+                            int adr = (rec.Address / 2) + x;
+
+                            byte[] buffer = new byte[2];
+                            buffer[0] = rec.Data[x * 2];
+                            buffer[1] = rec.Data[(x * 2) + 1];
+
+                            if (!STK.LoadProgramLowByte(adr, buffer[0]))
+                            {
+                                Error("An error ocurred while flashing at address: 0x" + adr.ToString());
+                                InvokeClose();
+                                return;
+                            }
+
+                            while (!STK.IsReady())
+                                Thread.Yield();
+
+                            if (!STK.LoadProgramHighByte(adr, buffer[1]))
+                            {
+                                Error("An error ocurred while flashing at address: 0x" + adr.ToString());
+                                InvokeClose();
+                                return;
+                            }
+
+                            while (!STK.IsReady())
+                                Thread.Yield();
+                        }
+
+                        int pageAdr = (rec.Address / 2) & 0xFFFFE0;
+                        if (!STK.WriteProgramMemoryPage(pageAdr))
+                        {
+                            Error("An error ocurred while flashing at address: 0x" + pageAdr.ToString());
                             InvokeClose();
                             return;
                         }
@@ -172,47 +202,81 @@ namespace ATmegaProgrammer
                         while (!STK.IsReady())
                             Thread.Yield();
 
-                        if (!STK.LoadProgramHighByte(adr, buffer[1]))
-                        {
-                            Error("An error ocurred while flashing at address: 0x" + adr.ToString());
-                            InvokeClose();
-                            return;
-                        }
-
-                        while (!STK.IsReady())
-                            Thread.Yield();
-
-                        if (!STK.WriteProgramMemoryPage(adr))
-                        {
-                            Error("An error ocurred while flashing at address: 0x" + adr.ToString());
-                            InvokeClose();
-                            return;
-                        }
-
-                        while (!STK.IsReady())
-                            Thread.Yield(); 
-
-                        //Verify
-                        byte lo;
-                        byte hi;
-
-                        lo = STK.ReadFlashLowByte(adr);
-                        hi = STK.ReadFlashHighByte(adr);
-
-                        if (lo != buffer[0] || hi != buffer[1])
-                        {
-                            Error("An error ocurred while verifying location: 0x" + adr.ToString("X2"));
-                            InvokeClose();
-                            return;
-                        }
-
-                        writtenWords++;
+                        writtenWords += words;
                         SetProgress(writtenWords);
+
+                        #endregion
+                    }
+                    else
+                    {
+                        #region Non-paged
+                        int pos = rec.Address / 2; //Address is in bytes, but we need word position (1 word is 2 bytes)
+                        int words = rec.ByteCount / 2;
+
+                        for (int x = 0; x < words; x++) //Write each word
+                        {
+                            if (!_doFlash)
+                                return;
+
+                            int adr = pos + x;
+
+                            byte[] buffer = new byte[2];
+                            buffer[0] = rec.Data[x * 2];
+                            buffer[1] = rec.Data[(x * 2) + 1];
+
+                            if (!STK.LoadProgramLowByte(adr, buffer[0]))
+                            {
+                                Error("An error ocurred while flashing at address: 0x" + adr.ToString());
+                                InvokeClose();
+                                return;
+                            }
+
+                            while (!STK.IsReady())
+                                Thread.Yield();
+
+                            if (!STK.LoadProgramHighByte(adr, buffer[1]))
+                            {
+                                Error("An error ocurred while flashing at address: 0x" + adr.ToString());
+                                InvokeClose();
+                                return;
+                            }
+
+                            while (!STK.IsReady())
+                                Thread.Yield();
+
+                            if (!STK.WriteProgramMemoryPage(adr))
+                            {
+                                Error("An error ocurred while flashing at address: 0x" + adr.ToString());
+                                InvokeClose();
+                                return;
+                            }
+
+                            while (!STK.IsReady())
+                                Thread.Yield();
+
+                            //Verify
+                            byte lo;
+                            byte hi;
+
+                            lo = STK.ReadFlashLowByte(adr);
+                            hi = STK.ReadFlashHighByte(adr);
+
+                            if (lo != buffer[0] || hi != buffer[1])
+                            {
+                                Error("An error ocurred while verifying location: 0x" + adr.ToString("X2"));
+                                InvokeClose();
+                                return;
+                            }
+
+                            writtenWords++;
+                            SetProgress(writtenWords);
+                        }
+                        #endregion
                     }
                 }
 
                 SetTask("Done!");
-                Info("Done!");
+                Info("Done!\nElapsed time: " + (DateTime.Now - startTime).ToString());
             }
 
             InvokeClose();

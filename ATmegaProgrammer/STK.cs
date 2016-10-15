@@ -19,9 +19,20 @@ namespace ATmegaProgrammer
         private static SerialPort _port;
         #endregion
 
+        public static void FlushInputBuffer()
+        {
+            if(_port.BytesToRead > 0)
+            {
+                byte[] temp = new byte[_port.BytesToRead];
+                _port.Read(temp, 0, temp.Length);
+            }
+        }
+
         #region STK
         public static bool Poll()
         {
+            FlushInputBuffer();
+
             SendText("0 ");
 
             bool hasSync = false;
@@ -47,9 +58,16 @@ namespace ATmegaProgrammer
 
         public static string GetISPName()
         {
+            FlushInputBuffer();
+
+            Thread.Sleep(10);
+
             SendText("1 ");
 
-            if (ReadByte() == STK_INSYNC)
+            Thread.Sleep(10);
+
+            byte b = ReadByte();
+            if (b == STK_INSYNC)
             {
                 string name = Encoding.ASCII.GetString(ReadBytes(7));
 
@@ -201,9 +219,17 @@ namespace ATmegaProgrammer
         {
             byte result = 0x0;
 
-            SendChar('V');
-            SendBytes(new byte[] { a1, a2, a3, a4 });
-            SendChar(' ');
+            byte[] all = new byte[] { (byte)'V', a1, a2, a3, a4, (byte)' ' };
+
+            //SendChar('V');
+            //SendBytes(new byte[] { a1, a2, a3, a4 });
+            //SendChar(' ');
+            _port.Write(all, 0, all.Length);
+            _port.BaseStream.Flush();
+            while (_port.BytesToWrite > 0)
+                Thread.Yield();
+
+            Thread.Sleep(10);
 
             byte rd = ReadByte();
             if (rd == STK_INSYNC)
@@ -251,7 +277,9 @@ namespace ATmegaProgrammer
 
         static void SendText(string s)
         {
-            _port.Write(s);
+            byte[] data = Encoding.ASCII.GetBytes(s);
+
+            _port.Write(data, 0, data.Length);
         }
 
         static byte[] ReadBytes(int l)

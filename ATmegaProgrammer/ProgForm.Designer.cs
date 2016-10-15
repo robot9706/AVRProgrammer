@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProgForm));
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnDisc = new System.Windows.Forms.Button();
@@ -47,45 +48,52 @@
             this.btnWires = new System.Windows.Forms.Button();
             this.btnCheckICompHex = new System.Windows.Forms.Button();
             this.groupFuses = new System.Windows.Forms.GroupBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.tbBitsLow = new System.Windows.Forms.TextBox();
-            this.tbBitsHigh = new System.Windows.Forms.TextBox();
-            this.tbBitsExtended = new System.Windows.Forms.TextBox();
-            this.btnFuseRead = new System.Windows.Forms.Button();
-            this.btnFuseWrite = new System.Windows.Forms.Button();
-            this.groupProg = new System.Windows.Forms.GroupBox();
-            this.btnEnterProgramming = new System.Windows.Forms.Button();
-            this.btnExitProgramming = new System.Windows.Forms.Button();
-            this.label11 = new System.Windows.Forms.Label();
             this.lblLockBits = new System.Windows.Forms.Label();
-            this.groupSig = new System.Windows.Forms.GroupBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.lblSig = new System.Windows.Forms.Label();
-            this.btnReadSignature = new System.Windows.Forms.Button();
-            this.cbPWM = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.btnFuseWrite = new System.Windows.Forms.Button();
+            this.btnFuseRead = new System.Windows.Forms.Button();
+            this.tbBitsExtended = new System.Windows.Forms.TextBox();
+            this.tbBitsHigh = new System.Windows.Forms.TextBox();
+            this.tbBitsLow = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.groupProg = new System.Windows.Forms.GroupBox();
+            this.numSpiClockDiv = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
             this.cbSPILow = new System.Windows.Forms.CheckBox();
+            this.cbPWM = new System.Windows.Forms.CheckBox();
+            this.btnExitProgramming = new System.Windows.Forms.Button();
+            this.btnEnterProgramming = new System.Windows.Forms.Button();
+            this.groupSig = new System.Windows.Forms.GroupBox();
+            this.btnReadSignature = new System.Windows.Forms.Button();
+            this.lblSig = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.groupFlash = new System.Windows.Forms.GroupBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.lblProgBuf = new System.Windows.Forms.Label();
-            this.btnBufLoad = new System.Windows.Forms.Button();
             this.btnFlash = new System.Windows.Forms.Button();
+            this.btnBufLoad = new System.Windows.Forms.Button();
+            this.lblProgBuf = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.groupBaud = new System.Windows.Forms.GroupBox();
+            this.btnBaudChange = new System.Windows.Forms.Button();
+            this.cbPaged = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numBaud)).BeginInit();
             this.progGroup.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupFuses.SuspendLayout();
             this.groupProg.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numSpiClockDiv)).BeginInit();
             this.groupSig.SuspendLayout();
             this.groupFlash.SuspendLayout();
+            this.groupBaud.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(904, 408);
+            this.label1.Location = new System.Drawing.Point(904, 424);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(130, 18);
             this.label1.TabIndex = 0;
@@ -102,7 +110,7 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(335, 174);
+            this.groupBox1.Size = new System.Drawing.Size(335, 199);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Programmer - Serial port";
@@ -143,7 +151,7 @@
             // 
             this.numBaud.Location = new System.Drawing.Point(76, 69);
             this.numBaud.Maximum = new decimal(new int[] {
-            100000,
+            10000000,
             0,
             0,
             0});
@@ -193,7 +201,7 @@
             this.progGroup.Enabled = false;
             this.progGroup.Location = new System.Drawing.Point(353, 12);
             this.progGroup.Name = "progGroup";
-            this.progGroup.Size = new System.Drawing.Size(335, 174);
+            this.progGroup.Size = new System.Drawing.Size(335, 199);
             this.progGroup.TabIndex = 2;
             this.progGroup.TabStop = false;
             this.progGroup.Text = "Programmer - Info";
@@ -248,16 +256,16 @@
             // 
             this.groupBox2.Controls.Add(this.btnWires);
             this.groupBox2.Controls.Add(this.btnCheckICompHex);
-            this.groupBox2.Location = new System.Drawing.Point(4, 313);
+            this.groupBox2.Location = new System.Drawing.Point(12, 338);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(343, 81);
+            this.groupBox2.Size = new System.Drawing.Size(335, 81);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Help";
             // 
             // btnWires
             // 
-            this.btnWires.Location = new System.Drawing.Point(232, 32);
+            this.btnWires.Location = new System.Drawing.Point(226, 32);
             this.btnWires.Name = "btnWires";
             this.btnWires.Size = new System.Drawing.Size(99, 32);
             this.btnWires.TabIndex = 3;
@@ -267,7 +275,7 @@
             // 
             // btnCheckICompHex
             // 
-            this.btnCheckICompHex.Location = new System.Drawing.Point(17, 32);
+            this.btnCheckICompHex.Location = new System.Drawing.Point(11, 32);
             this.btnCheckICompHex.Name = "btnCheckICompHex";
             this.btnCheckICompHex.Size = new System.Drawing.Size(209, 32);
             this.btnCheckICompHex.TabIndex = 1;
@@ -288,70 +296,30 @@
             this.groupFuses.Controls.Add(this.label9);
             this.groupFuses.Controls.Add(this.label8);
             this.groupFuses.Enabled = false;
-            this.groupFuses.Location = new System.Drawing.Point(353, 192);
+            this.groupFuses.Location = new System.Drawing.Point(353, 217);
             this.groupFuses.Name = "groupFuses";
             this.groupFuses.Size = new System.Drawing.Size(335, 202);
             this.groupFuses.TabIndex = 4;
             this.groupFuses.TabStop = false;
             this.groupFuses.Text = "Fuses";
             // 
-            // label8
+            // lblLockBits
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(18, 24);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(118, 18);
-            this.label8.TabIndex = 0;
-            this.label8.Text = "Fuse bits low 0x:";
+            this.lblLockBits.AutoSize = true;
+            this.lblLockBits.Location = new System.Drawing.Point(134, 112);
+            this.lblLockBits.Name = "lblLockBits";
+            this.lblLockBits.Size = new System.Drawing.Size(13, 18);
+            this.lblLockBits.TabIndex = 10;
+            this.lblLockBits.Text = "-";
             // 
-            // label9
+            // label11
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(14, 54);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(122, 18);
-            this.label9.TabIndex = 1;
-            this.label9.Text = "Fuse bits high 0x:";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(17, 84);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(119, 18);
-            this.label10.TabIndex = 2;
-            this.label10.Text = "Extended bits 0x:";
-            // 
-            // tbBitsLow
-            // 
-            this.tbBitsLow.Location = new System.Drawing.Point(138, 21);
-            this.tbBitsLow.Name = "tbBitsLow";
-            this.tbBitsLow.Size = new System.Drawing.Size(47, 24);
-            this.tbBitsLow.TabIndex = 3;
-            // 
-            // tbBitsHigh
-            // 
-            this.tbBitsHigh.Location = new System.Drawing.Point(138, 51);
-            this.tbBitsHigh.Name = "tbBitsHigh";
-            this.tbBitsHigh.Size = new System.Drawing.Size(47, 24);
-            this.tbBitsHigh.TabIndex = 4;
-            // 
-            // tbBitsExtended
-            // 
-            this.tbBitsExtended.Location = new System.Drawing.Point(138, 81);
-            this.tbBitsExtended.Name = "tbBitsExtended";
-            this.tbBitsExtended.Size = new System.Drawing.Size(47, 24);
-            this.tbBitsExtended.TabIndex = 5;
-            // 
-            // btnFuseRead
-            // 
-            this.btnFuseRead.Location = new System.Drawing.Point(58, 152);
-            this.btnFuseRead.Name = "btnFuseRead";
-            this.btnFuseRead.Size = new System.Drawing.Size(102, 27);
-            this.btnFuseRead.TabIndex = 7;
-            this.btnFuseRead.Text = "Read";
-            this.btnFuseRead.UseVisualStyleBackColor = true;
-            this.btnFuseRead.Click += new System.EventHandler(this.btnFuseRead_Click);
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(45, 112);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(91, 18);
+            this.label11.TabIndex = 9;
+            this.label11.Text = "Lock bits: 0x";
             // 
             // btnFuseWrite
             // 
@@ -363,8 +331,68 @@
             this.btnFuseWrite.UseVisualStyleBackColor = true;
             this.btnFuseWrite.Click += new System.EventHandler(this.btnFuseWrite_Click);
             // 
+            // btnFuseRead
+            // 
+            this.btnFuseRead.Location = new System.Drawing.Point(58, 152);
+            this.btnFuseRead.Name = "btnFuseRead";
+            this.btnFuseRead.Size = new System.Drawing.Size(102, 27);
+            this.btnFuseRead.TabIndex = 7;
+            this.btnFuseRead.Text = "Read";
+            this.btnFuseRead.UseVisualStyleBackColor = true;
+            this.btnFuseRead.Click += new System.EventHandler(this.btnFuseRead_Click);
+            // 
+            // tbBitsExtended
+            // 
+            this.tbBitsExtended.Location = new System.Drawing.Point(138, 81);
+            this.tbBitsExtended.Name = "tbBitsExtended";
+            this.tbBitsExtended.Size = new System.Drawing.Size(47, 24);
+            this.tbBitsExtended.TabIndex = 5;
+            // 
+            // tbBitsHigh
+            // 
+            this.tbBitsHigh.Location = new System.Drawing.Point(138, 51);
+            this.tbBitsHigh.Name = "tbBitsHigh";
+            this.tbBitsHigh.Size = new System.Drawing.Size(47, 24);
+            this.tbBitsHigh.TabIndex = 4;
+            // 
+            // tbBitsLow
+            // 
+            this.tbBitsLow.Location = new System.Drawing.Point(138, 21);
+            this.tbBitsLow.Name = "tbBitsLow";
+            this.tbBitsLow.Size = new System.Drawing.Size(47, 24);
+            this.tbBitsLow.TabIndex = 3;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(17, 84);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(119, 18);
+            this.label10.TabIndex = 2;
+            this.label10.Text = "Extended bits 0x:";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(14, 54);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(122, 18);
+            this.label9.TabIndex = 1;
+            this.label9.Text = "Fuse bits high 0x:";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(18, 24);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(118, 18);
+            this.label8.TabIndex = 0;
+            this.label8.Text = "Fuse bits low 0x:";
+            // 
             // groupProg
             // 
+            this.groupProg.Controls.Add(this.numSpiClockDiv);
+            this.groupProg.Controls.Add(this.label7);
             this.groupProg.Controls.Add(this.cbSPILow);
             this.groupProg.Controls.Add(this.cbPWM);
             this.groupProg.Controls.Add(this.btnExitProgramming);
@@ -372,28 +400,66 @@
             this.groupProg.Enabled = false;
             this.groupProg.Location = new System.Drawing.Point(694, 12);
             this.groupProg.Name = "groupProg";
-            this.groupProg.Size = new System.Drawing.Size(340, 174);
+            this.groupProg.Size = new System.Drawing.Size(340, 199);
             this.groupProg.TabIndex = 5;
             this.groupProg.TabStop = false;
             this.groupProg.Text = "Programmer - Tools";
             // 
-            // btnEnterProgramming
+            // numSpiClockDiv
             // 
-            this.btnEnterProgramming.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.btnEnterProgramming.Location = new System.Drawing.Point(58, 93);
-            this.btnEnterProgramming.Name = "btnEnterProgramming";
-            this.btnEnterProgramming.Size = new System.Drawing.Size(210, 32);
-            this.btnEnterProgramming.TabIndex = 10;
-            this.btnEnterProgramming.Text = "Enter programming mode";
-            this.btnEnterProgramming.UseVisualStyleBackColor = true;
-            this.btnEnterProgramming.EnabledChanged += new System.EventHandler(this.btnEnterProgramming_EnabledChanged);
-            this.btnEnterProgramming.Click += new System.EventHandler(this.btnEnterProgramming_Click);
+            this.numSpiClockDiv.Location = new System.Drawing.Point(177, 82);
+            this.numSpiClockDiv.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numSpiClockDiv.Name = "numSpiClockDiv";
+            this.numSpiClockDiv.Size = new System.Drawing.Size(120, 24);
+            this.numSpiClockDiv.TabIndex = 15;
+            this.numSpiClockDiv.Value = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(50, 84);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(121, 18);
+            this.label7.TabIndex = 14;
+            this.label7.Text = "SPI clock divider:";
+            // 
+            // cbSPILow
+            // 
+            this.cbSPILow.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.cbSPILow.AutoSize = true;
+            this.cbSPILow.Location = new System.Drawing.Point(63, 55);
+            this.cbSPILow.Name = "cbSPILow";
+            this.cbSPILow.Size = new System.Drawing.Size(150, 22);
+            this.cbSPILow.TabIndex = 13;
+            this.cbSPILow.Text = "Very low SPI clock";
+            this.cbSPILow.UseVisualStyleBackColor = true;
+            this.cbSPILow.CheckedChanged += new System.EventHandler(this.cbSPILow_CheckedChanged);
+            // 
+            // cbPWM
+            // 
+            this.cbPWM.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.cbPWM.AutoSize = true;
+            this.cbPWM.Location = new System.Drawing.Point(63, 28);
+            this.cbPWM.Name = "cbPWM";
+            this.cbPWM.Size = new System.Drawing.Size(121, 22);
+            this.cbPWM.TabIndex = 12;
+            this.cbPWM.Text = "PWM on pin 9";
+            this.cbPWM.UseVisualStyleBackColor = true;
+            this.cbPWM.CheckedChanged += new System.EventHandler(this.cbPWM_CheckedChanged);
             // 
             // btnExitProgramming
             // 
             this.btnExitProgramming.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.btnExitProgramming.Enabled = false;
-            this.btnExitProgramming.Location = new System.Drawing.Point(58, 131);
+            this.btnExitProgramming.Location = new System.Drawing.Point(63, 154);
             this.btnExitProgramming.Name = "btnExitProgramming";
             this.btnExitProgramming.Size = new System.Drawing.Size(210, 32);
             this.btnExitProgramming.TabIndex = 11;
@@ -402,23 +468,17 @@
             this.btnExitProgramming.EnabledChanged += new System.EventHandler(this.btnEnterProgramming_EnabledChanged);
             this.btnExitProgramming.Click += new System.EventHandler(this.btnExitProgramming_Click);
             // 
-            // label11
+            // btnEnterProgramming
             // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(45, 112);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(91, 18);
-            this.label11.TabIndex = 9;
-            this.label11.Text = "Lock bits: 0x";
-            // 
-            // lblLockBits
-            // 
-            this.lblLockBits.AutoSize = true;
-            this.lblLockBits.Location = new System.Drawing.Point(134, 112);
-            this.lblLockBits.Name = "lblLockBits";
-            this.lblLockBits.Size = new System.Drawing.Size(13, 18);
-            this.lblLockBits.TabIndex = 10;
-            this.lblLockBits.Text = "-";
+            this.btnEnterProgramming.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.btnEnterProgramming.Location = new System.Drawing.Point(63, 116);
+            this.btnEnterProgramming.Name = "btnEnterProgramming";
+            this.btnEnterProgramming.Size = new System.Drawing.Size(210, 32);
+            this.btnEnterProgramming.TabIndex = 10;
+            this.btnEnterProgramming.Text = "Enter programming mode";
+            this.btnEnterProgramming.UseVisualStyleBackColor = true;
+            this.btnEnterProgramming.EnabledChanged += new System.EventHandler(this.btnEnterProgramming_EnabledChanged);
+            this.btnEnterProgramming.Click += new System.EventHandler(this.btnEnterProgramming_Click);
             // 
             // groupSig
             // 
@@ -426,30 +486,12 @@
             this.groupSig.Controls.Add(this.lblSig);
             this.groupSig.Controls.Add(this.label12);
             this.groupSig.Enabled = false;
-            this.groupSig.Location = new System.Drawing.Point(12, 192);
+            this.groupSig.Location = new System.Drawing.Point(12, 217);
             this.groupSig.Name = "groupSig";
-            this.groupSig.Size = new System.Drawing.Size(335, 104);
+            this.groupSig.Size = new System.Drawing.Size(335, 115);
             this.groupSig.TabIndex = 6;
             this.groupSig.TabStop = false;
             this.groupSig.Text = "CPU Signature";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(17, 24);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(74, 18);
-            this.label12.TabIndex = 0;
-            this.label12.Text = "Signature:";
-            // 
-            // lblSig
-            // 
-            this.lblSig.AutoSize = true;
-            this.lblSig.Location = new System.Drawing.Point(97, 24);
-            this.lblSig.Name = "lblSig";
-            this.lblSig.Size = new System.Drawing.Size(13, 18);
-            this.lblSig.TabIndex = 1;
-            this.lblSig.Text = "-";
             // 
             // btnReadSignature
             // 
@@ -461,69 +503,37 @@
             this.btnReadSignature.UseVisualStyleBackColor = true;
             this.btnReadSignature.Click += new System.EventHandler(this.btnReadSignature_Click);
             // 
-            // cbPWM
+            // lblSig
             // 
-            this.cbPWM.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.cbPWM.AutoSize = true;
-            this.cbPWM.Location = new System.Drawing.Point(108, 34);
-            this.cbPWM.Name = "cbPWM";
-            this.cbPWM.Size = new System.Drawing.Size(121, 22);
-            this.cbPWM.TabIndex = 12;
-            this.cbPWM.Text = "PWM on pin 9";
-            this.cbPWM.UseVisualStyleBackColor = true;
-            this.cbPWM.CheckedChanged += new System.EventHandler(this.cbPWM_CheckedChanged);
+            this.lblSig.AutoSize = true;
+            this.lblSig.Location = new System.Drawing.Point(97, 24);
+            this.lblSig.Name = "lblSig";
+            this.lblSig.Size = new System.Drawing.Size(13, 18);
+            this.lblSig.TabIndex = 1;
+            this.lblSig.Text = "-";
             // 
-            // cbSPILow
+            // label12
             // 
-            this.cbSPILow.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.cbSPILow.AutoSize = true;
-            this.cbSPILow.Location = new System.Drawing.Point(85, 62);
-            this.cbSPILow.Name = "cbSPILow";
-            this.cbSPILow.Size = new System.Drawing.Size(150, 22);
-            this.cbSPILow.TabIndex = 13;
-            this.cbSPILow.Text = "Very low SPI clock";
-            this.cbSPILow.UseVisualStyleBackColor = true;
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(17, 24);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(74, 18);
+            this.label12.TabIndex = 0;
+            this.label12.Text = "Signature:";
             // 
             // groupFlash
             // 
+            this.groupFlash.Controls.Add(this.cbPaged);
             this.groupFlash.Controls.Add(this.btnFlash);
             this.groupFlash.Controls.Add(this.btnBufLoad);
             this.groupFlash.Controls.Add(this.lblProgBuf);
             this.groupFlash.Controls.Add(this.label6);
-            this.groupFlash.Location = new System.Drawing.Point(694, 192);
+            this.groupFlash.Location = new System.Drawing.Point(694, 217);
             this.groupFlash.Name = "groupFlash";
-            this.groupFlash.Size = new System.Drawing.Size(339, 100);
+            this.groupFlash.Size = new System.Drawing.Size(339, 133);
             this.groupFlash.TabIndex = 7;
             this.groupFlash.TabStop = false;
             this.groupFlash.Text = "Flash program memory";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(14, 37);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(51, 18);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "Buffer:";
-            // 
-            // lblProgBuf
-            // 
-            this.lblProgBuf.AutoSize = true;
-            this.lblProgBuf.Location = new System.Drawing.Point(71, 37);
-            this.lblProgBuf.Name = "lblProgBuf";
-            this.lblProgBuf.Size = new System.Drawing.Size(13, 18);
-            this.lblProgBuf.TabIndex = 1;
-            this.lblProgBuf.Text = "-";
-            // 
-            // btnBufLoad
-            // 
-            this.btnBufLoad.Location = new System.Drawing.Point(15, 60);
-            this.btnBufLoad.Name = "btnBufLoad";
-            this.btnBufLoad.Size = new System.Drawing.Size(102, 32);
-            this.btnBufLoad.TabIndex = 11;
-            this.btnBufLoad.Text = "Load";
-            this.btnBufLoad.UseVisualStyleBackColor = true;
-            this.btnBufLoad.Click += new System.EventHandler(this.btnBufLoad_Click);
             // 
             // btnFlash
             // 
@@ -537,10 +547,70 @@
             this.btnFlash.UseVisualStyleBackColor = true;
             this.btnFlash.Click += new System.EventHandler(this.btnFlash_Click);
             // 
+            // btnBufLoad
+            // 
+            this.btnBufLoad.Location = new System.Drawing.Point(15, 60);
+            this.btnBufLoad.Name = "btnBufLoad";
+            this.btnBufLoad.Size = new System.Drawing.Size(102, 32);
+            this.btnBufLoad.TabIndex = 11;
+            this.btnBufLoad.Text = "Browse";
+            this.btnBufLoad.UseVisualStyleBackColor = true;
+            this.btnBufLoad.Click += new System.EventHandler(this.btnBufLoad_Click);
+            // 
+            // lblProgBuf
+            // 
+            this.lblProgBuf.AutoSize = true;
+            this.lblProgBuf.Location = new System.Drawing.Point(71, 37);
+            this.lblProgBuf.Name = "lblProgBuf";
+            this.lblProgBuf.Size = new System.Drawing.Size(13, 18);
+            this.lblProgBuf.TabIndex = 1;
+            this.lblProgBuf.Text = "-";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(30, 39);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(35, 18);
+            this.label6.TabIndex = 0;
+            this.label6.Text = "File:";
+            // 
+            // groupBaud
+            // 
+            this.groupBaud.Controls.Add(this.btnBaudChange);
+            this.groupBaud.Enabled = false;
+            this.groupBaud.Location = new System.Drawing.Point(694, 356);
+            this.groupBaud.Name = "groupBaud";
+            this.groupBaud.Size = new System.Drawing.Size(339, 63);
+            this.groupBaud.TabIndex = 8;
+            this.groupBaud.TabStop = false;
+            this.groupBaud.Text = "Change baud";
+            // 
+            // btnBaudChange
+            // 
+            this.btnBaudChange.Location = new System.Drawing.Point(91, 23);
+            this.btnBaudChange.Name = "btnBaudChange";
+            this.btnBaudChange.Size = new System.Drawing.Size(169, 32);
+            this.btnBaudChange.TabIndex = 15;
+            this.btnBaudChange.Text = "Change to \"high speed\"";
+            this.btnBaudChange.UseVisualStyleBackColor = true;
+            this.btnBaudChange.Click += new System.EventHandler(this.btnBaudChange_Click);
+            // 
+            // cbPaged
+            // 
+            this.cbPaged.AutoSize = true;
+            this.cbPaged.Location = new System.Drawing.Point(17, 97);
+            this.cbPaged.Name = "cbPaged";
+            this.cbPaged.Size = new System.Drawing.Size(104, 22);
+            this.cbPaged.TabIndex = 15;
+            this.cbPaged.Text = "Paged write";
+            this.cbPaged.UseVisualStyleBackColor = true;
+            // 
             // ProgForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(1046, 435);
+            this.ClientSize = new System.Drawing.Size(1046, 451);
+            this.Controls.Add(this.groupBaud);
             this.Controls.Add(this.groupFlash);
             this.Controls.Add(this.groupSig);
             this.Controls.Add(this.groupProg);
@@ -550,6 +620,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ProgForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ATmega programmer";
@@ -565,10 +636,12 @@
             this.groupFuses.PerformLayout();
             this.groupProg.ResumeLayout(false);
             this.groupProg.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numSpiClockDiv)).EndInit();
             this.groupSig.ResumeLayout(false);
             this.groupSig.PerformLayout();
             this.groupFlash.ResumeLayout(false);
             this.groupFlash.PerformLayout();
+            this.groupBaud.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -619,6 +692,11 @@
         private System.Windows.Forms.Label lblProgBuf;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnFlash;
+        private System.Windows.Forms.NumericUpDown numSpiClockDiv;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.GroupBox groupBaud;
+        private System.Windows.Forms.Button btnBaudChange;
+        private System.Windows.Forms.CheckBox cbPaged;
     }
 }
 

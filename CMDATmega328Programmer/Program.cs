@@ -50,7 +50,7 @@ namespace ProgTest
         [STAThread]
         static void Main(string[] args)
         {
-            _port = new SerialPort("COM10", 19200);
+            _port = new SerialPort("COM3", 19200);
             _port.Open();
             _port.DtrEnable = true;
 
