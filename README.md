@@ -23,7 +23,7 @@ Note: No crystal needed for factory new chips (they are fused for their internal
 (A pull-up resistor on the reset pin is highly suggested.)
 
 # GUI usage
-![Alt text](/Misc/Screenshot.png?raw=true "Wiring")
+![Alt text](/Misc/Screenshot-v2.png?raw=true "Wiring")
 
 1) First of all upload the sketch to an Arduino from the "Misc/ArduinoMicro_AVRProgrammer" folder (you migh need to edit the "Config.h" to make it work on your Arduino).
 
