@@ -25,17 +25,17 @@ Note: No crystal needed for factory new chips (they are fused for their internal
 # GUI usage
 ![Alt text](/Misc/Screenshot-v2.png?raw=true "Wiring")
 
-1) First of all upload the sketch to an Arduino from the "Misc/ArduinoMicro_AVRProgrammer" folder (you migh need to edit the "Config.h" to make it work on your Arduino).
+  * First of all upload the sketch to an Arduino from the "Misc/ArduinoMicro_AVRProgrammer" folder (you migh need to edit the "Config.h" to make it work on your Arduino).
 
-2) Start the GUI tool.
+  * Start the GUI tool.
 
-3) Select the COM port of the Ardunio device and connect to it.
+  * Select the COM port of the Ardunio device and connect to it.
 
-4) Using the "Processor" tab put the target MCU into ISP mode and verify the signature.
+  * Using the "Processor" tab put the target MCU into ISP mode and verify the signature.
 
-5) Change the fuses to your needs, use the "Help" button to open an online helper tool (not supported for all CPUs).
+  * Change the fuses to your needs, use the "Help" button to open an online helper tool (not supported for all CPUs).
 
-6) Modify the program memory / EEPROM (make sure memory sizes are correctly set when dumping the data).
+  * Modify the program memory / EEPROM (make sure memory sizes are correctly set when dumping the data).
 
 # Projects
 ATmegaProgrammer - GUI version: Easy to use.
@@ -47,3 +47,6 @@ ArdunioISP modified sketch included.
 
 # License
 Use it, modify it, but don't sell it, also give credit.
+
+# Dependencies
+This application uses [MetroFramework](https://github.com/thielj/MetroFramework) for the GUI.
