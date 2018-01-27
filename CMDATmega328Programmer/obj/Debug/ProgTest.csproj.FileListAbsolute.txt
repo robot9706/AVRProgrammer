@@ -1,8 +1,0 @@
-D:\CSharp\2015\ProgTest\ProgTest\bin\Debug\ProgTest.exe.config
-D:\CSharp\2015\ProgTest\ProgTest\bin\Debug\ProgTest.exe
-D:\CSharp\2015\ProgTest\ProgTest\bin\Debug\ProgTest.pdb
-D:\CSharp\2015\ProgTest\ProgTest\obj\Debug\ProgTest.csprojResolveAssemblyReference.cache
-D:\CSharp\2015\ProgTest\ProgTest\obj\Debug\ProgTest.exe
-D:\CSharp\2015\ProgTest\ProgTest\obj\Debug\ProgTest.pdb
-D:\CSharp\2015\ProgTest\ProgTest\bin\Debug\Misc\ATmegaBOOT_168_atmega328.hex
-D:\CSharp\2015\ProgTest\ProgTest\bin\Debug\bootloader.hex
