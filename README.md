@@ -20,6 +20,8 @@ You only need to connect the SPI pins of you programmer Arduino and the target M
 Note: No crystal needed for factory new chips (they are fused for their internal 8MHz/1MHz oscillators).
 ![Alt text](/Misc/Breadboard.png?raw=true "Wiring")
 
+(A pull-up resistor on the reset pin is highly suggested.)
+
 # GUI usage
 ![Alt text](/Misc/Screenshot.png?raw=true "Wiring")
 
