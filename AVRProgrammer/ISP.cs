@@ -44,6 +44,8 @@ namespace AVRProgrammer
 			Thread.Sleep(500);
 
 			_port.DtrEnable = true;
+
+			Thread.Sleep(1000);
 		}
 
 		public void Close()

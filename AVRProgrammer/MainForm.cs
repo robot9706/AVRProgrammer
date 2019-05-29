@@ -12,6 +12,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -26,7 +27,8 @@ namespace AVRProgrammer
 
 		private Dictionary<uint, string> _cpuLink = new Dictionary<uint, string>()
 		{
-			{ 0x001E950F, "atmega328p" }
+			{ 0x001E950F, "atmega328p" },
+			{ 0x001E930B, "attiny85" }
 		};
 
 		public MainForm()
@@ -101,11 +103,26 @@ namespace AVRProgrammer
 			return false;
 		}
 
+		private bool MultiPoll(ISP isp)
+		{
+			for (int x = 0; x < 3; x++)
+			{
+				if (isp.Poll())
+				{
+					return true;
+				}
+
+				Thread.Sleep(200);
+			}
+
+			return false;
+		}
+
 		private void btnConnect_Click(object sender, EventArgs e)
 		{
 			ISP isp = new ISP((string)cbProgCom.Items[cbProgCom.SelectedIndex]);
 
-			if (TryAction(() => isp.Poll()))
+			if (TryAction(() => MultiPoll(isp)))
 			{
 				_isp = isp;
 
